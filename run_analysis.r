@@ -23,8 +23,8 @@ train_y <- read.table("UCI HAR Dataset/train/y_train.txt", col.names = "label")
 subject_train <- read.table("UCI HAR Dataset/train/subject_train.txt", col.names="subject")
 
 #test
-test_x <- read.table("UCI HAR Dataset/test/X_train.txt", col.names = features$features)
-test_y <- read.table("UCI HAR Dataset/test/y_train.txt", col.names = "label")
+test_x <- read.table("UCI HAR Dataset/test/X_test.txt", col.names = features$features)
+test_y <- read.table("UCI HAR Dataset/test/y_test.txt", col.names = "label")
 subject_test <- read.table("UCI HAR Dataset/test/subject_test.txt", col.names="subject")
 
 #merge datasets train and test separately
