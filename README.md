@@ -13,5 +13,5 @@ Here are the data for the project:
 https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip
 
 # File Description
-run_analysis.r - The script is respponsible to merge and clean the train and test datasets. Then it extracts measurements on mean and standard deviation for each attribute and the columns are renamed.
-Then an independent tidied dtaset is created witht the averages of each variable for each activity and subject respectively. 
+run_analysis.R - The script is responsible to merge and clean the train and test datasets. Then it extracts measurements on mean and standard deviation for each attribute and the columns are renamed.
+Then an independent tidied dataset is created with the averages of each variable for each activity and subject respectively. 
