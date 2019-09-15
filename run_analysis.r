@@ -12,9 +12,7 @@ if (!file.exists("UCI HAR Dataset")) {
 
 #loading features and activity labels
 features <- read.table("UCI HAR Dataset/features.txt", col.names = c("no","features"))
-#features[,2] <- as.character(features[,2])
 activities <- read.table("UCI HAR Dataset/activity_labels.txt",col.names = c("label", "activity"))
-#activities[,2] <- as.character(activities[,2])
 
 #load dataset
 #train
@@ -27,19 +25,39 @@ test_x <- read.table("UCI HAR Dataset/test/X_test.txt", col.names = features$fea
 test_y <- read.table("UCI HAR Dataset/test/y_test.txt", col.names = "label")
 subject_test <- read.table("UCI HAR Dataset/test/subject_test.txt", col.names="subject")
 
-#merge datasets train and test separately
-x <- rbind(train_x, test_x)
-y <- rbind(train_y, test_y)
+#merge datasets
+activity <- rbind(train_y, test_y)
+d_features <- rbind(train_x, test_x)
 subject <- rbind(subject_train, subject_test)
-final_merged_data <- cbind(subject,y,x)
+final_merged_data1 <- cbind(subject,activity)
+final_merged_data <- cbind(d_features,final_merged_data1)
+
 
 #extracting measurements only based on mean and sd
-tidy_mean_sd <- select(final_merged_data, contains("mean"), contains("std"))
+tidy_mean_std <- final_merged_data %>% select(subject, label, contains("mean"), contains("std"))
 
-# Averanging all variable by each subject each activity
-tidy_mean_std$subject <- as.factor(tidy_set$subject)
-tidy_mean_std$activity <- as.factor(tidy_set$activity)
+#naming activities
+tidy_mean_std$label <- activities[tidy_mean_std$label,2]
 
+#labeling the dataset
+names(tidy_mean_std)[2] = "activity"
+names(tidy_mean_std)<-gsub("Acc", "Accelerometer", names(tidy_mean_std))
+names(tidy_mean_std)<-gsub("Gyro", "Gyroscope", names(tidy_mean_std))
+names(tidy_mean_std)<-gsub("BodyBody", "Body", names(tidy_mean_std))
+names(tidy_mean_std)<-gsub("Mag", "Magnitude", names(tidy_mean_std))
+names(tidy_mean_std)<-gsub("^t", "Time", names(tidy_mean_std))
+names(tidy_mean_std)<-gsub("^f", "Frequency", names(tidy_mean_std))
+names(tidy_mean_std)<-gsub("tBody", "TimeBody", names(tidy_mean_std))
+names(tidy_mean_std)<-gsub("-mean()", "Mean", names(tidy_mean_std), ignore.case = TRUE)
+names(tidy_mean_std)<-gsub("-std()", "STD", names(tidy_mean_std), ignore.case = TRUE)
+names(tidy_mean_std)<-gsub("-freq()", "Frequency", names(tidy_mean_std), ignore.case = TRUE)
+names(tidy_mean_std)<-gsub("angle", "Angle", names(tidy_mean_std))
+names(tidy_mean_std)<-gsub("gravity", "Gravity", names(tidy_mean_std))
+
+#creating an independant tidy dataset based on average of activity and subject
 tidy_avg <- tidy_mean_std %>%
   group_by(subject, activity) %>%
   summarise_each(funs(mean))
+
+# output to file "tidy_fin_data.txt"
+write.table(tidy_avg, "tidy_fin_data.txt", row.names = FALSE,quote = FALSE)
